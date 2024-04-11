@@ -18,7 +18,7 @@ print("Column names:", data.columns)
 # Assuming the column names for high and low are 'High' and 'Low'
 high_column_name = float('High')
 low_column_name = float('Low')
-time_column_name = 'time'
+time_column_name = float('time')
 # temp column names
 temp_high=0
 temp_low=0

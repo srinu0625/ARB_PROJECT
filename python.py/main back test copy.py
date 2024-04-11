@@ -26,20 +26,31 @@ temp_low = 0
 # local column names
 local_high = temp_high
 local_low = temp_low
-
+# flag 
 bull = False
 bear = False
 flag = False
-
 # num of positions 
 number_of_positions=0
 
 # num of trades
 num_of_trades=0
 
-# max_loss and max_profit
-max_loss=0
-max_profit=0
+# P&L calculation
+entry_price = 0
+exit_price = 0
+contract_size = 50 
+# maxloss maxprofit
+max_loss=0 
+max_profit=0 
+# total p&l
+TOTAL_P_L=0
+
+# total long and short pnl
+total_long_pnl=0
+total_short_pnl=0
+total_positive_pnl=0
+total_negative_pnl=0
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
@@ -52,35 +63,34 @@ for index, row in data.iterrows():
         previous_low = float(data.at[index - 1, low_column_name] if index > 0 else 0)
 
          # case 1------------------------------------------------------------------------------------
-        if current_high > previous_high and (local_high == 0 or current_high > local_high):
-            local_high = current_high
-            print("if one ","TH :",temp_high,"CH :",current_high)
+        if current_high > previous_high:
+            temp_high = current_high
 
-        if current_low < previous_low and (local_low == 0 or current_low < local_low):
-            local_low = current_low
-            print("if two ","TL :",temp_low,"CL :",current_low)
+        if current_low < previous_low:
+            temp_low = current_low
         # case 2------------------------------------------------------------------------------------
-        # if current_high > previous_high:
-        #     local_low = temp_low
-        #     print("if three ","LL :",local_low,"TL :",temp_low)
+        if current_high > previous_high:
+            local_low = temp_low
 
-        # if current_low < previous_low:
-        #     local_high = temp_high
-        #     print("if FOUR ","LH :",local_high,"TH :",temp_high)
+        if current_low < previous_low:
+            local_high = temp_high
 
         # Printing data
         print("Time:", current_time)
         print("Current High :", current_high, "Previous High :", previous_high, "local_high :", local_high
-              , "temp_high :", temp_high)
+              , " temp_high :", temp_high)
         print("Current Low :", current_low, "Previous Low :", previous_low, "local_low :", local_low
-              , "temp_low :", temp_low)
+              , " temp_low :", temp_low)
+    
 
         # bullish candle---------------------------------------------------------------------------
         if current_high > local_high and not bear and not flag:
             number_of_positions +=1
-            print("snp500 long entry","(CH > LH)")
-            print("current_high : ",current_high)
-            print("local_high : ",local_high),print("number_of_positions : ",number_of_positions)
+            entry_price = current_high
+            print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m") # ANSI escape codes for this color coding to work
+            print("current_high : ",current_high),print("local_high : ",local_high)
+            print("number_of_positions : ",number_of_positions)
+            print("long_entry_price: ",entry_price)
             bull = True
             flag = True
             continue
@@ -88,39 +98,101 @@ for index, row in data.iterrows():
         if current_low < local_low and bull and flag:
             number_of_positions -=1
             num_of_trades+=1
-            print("snp500 long exit","(CL < LL)")
-            print("current_low :",current_low)
-            print("local_low :",local_low),print("number_of_positions : ",number_of_positions)
-            
+            exit_price = current_low
+            print("\033[32m--SNP500 LONG EXIT-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
+            print("current_low :",current_low),print("local_low :",local_low)
+            print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
+            print( "long_exit_price: ",exit_price)
             bull = False
             flag = False
+
+        # Calculate P&L
+            pnl = (exit_price - entry_price) * 1 *contract_size
+            TOTAL_P_L+=pnl
+            total_long_pnl+=pnl
+            integer_pnl = float(pnl)  # Extract the integer part of the P&L
+
+        # declaring maxloss and maxprofit
+            max_profit=max(max_profit,pnl)
+            max_loss=min(max_loss,pnl)
+
+        # Check if integer part of P&L is positive or negative and set color accordingly
+            if integer_pnl >= 0:
+                pnl_color = "\033[32m"  # Green color
+            else:
+                pnl_color = "\033[31m"  # Red color
+        # Add to total positive or negative P&L based on the result
+            if pnl >= 0:
+                total_positive_pnl += pnl
+            else:
+                total_negative_pnl += pnl
+
+            print("P&L for this trade:",pnl_color, integer_pnl,"\033[0m")
+            print("        max_profit:",max_profit)
+            print("          max_loss:",max_loss)
             continue
 
         # bearish candle-------------------------------------------------------------------------
         if current_low < local_low and not bull and not flag:
             number_of_positions +=1
-            print("snp500 short entry","(CL < LL)")
+            entry_price=current_low
+            print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
             print("current_low :",current_low)
             print("local_low :",local_low),print("number_of_positions : ",number_of_positions)
+            print("short_entry_price: ",entry_price)
             bear = True
             flag = True
             continue
 
         if current_high > local_high and bear and flag:
             number_of_positions -=1
-            num_of_trades +=1
-            print("snp500 short exit","(CH > LH)")
-            print("current_high :",current_high)
-            print("local_high :",local_high),print("number_of_positions : ",number_of_positions)
+            num_of_trades +=1  
+            exit_price=current_high       
+            print("\033[31m--SNP500 SHORT EXIT-- (CH > LH)\033[0m") #  ANSI escape codes for this color coding to work 
+            print("current_high :",current_high), print("local_high :",local_high),
+            print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
+            print("short_exit_price: ",exit_price)
             bear = False
             flag = False
+
+        # Calculate P&L
+            pnl = (entry_price - exit_price) * 1 *contract_size
+            TOTAL_P_L +=pnl
+            total_short_pnl+=pnl
+            integer_pnl = float(pnl)  # Extract the integer part of the P&L
+
+        # declaring maxloss and maxprofit
+            max_profit=max(max_profit,pnl)
+            max_loss=min(max_loss,pnl)
+      
+        # Check if integer part of P&L is positive or negative and set color accordingly
+            if integer_pnl >= 0:
+                pnl_color = "\033[32m"  # Green color
+            else:
+                pnl_color = "\033[31m"  # Red color
+
+        # Add to total positive or negative P&L based on the result
+            if pnl >= 0:
+                total_positive_pnl += pnl
+            else:
+                total_negative_pnl += pnl
+            print("P&L for this trade:",pnl_color, integer_pnl,"\033[0m")
+            print("        max_profit:",max_profit)
+            print("          max_loss:",max_loss)
             continue
     
     except Exception as e:
         print("Error:", e)
 
     finally:
-        print("End of iteration-----------------------------------------------------------")
-
-print(num_of_trades)
+        print("-----------------------------End of iteration---------------------------------")
+print("    postive_p&l:", total_positive_pnl)
+print("   negative_p&l:",total_negative_pnl)
+print("     MAX_PROFIT:", max_profit)  
+print("       MAX_LOSS:",max_loss)
+print(" TOTAL_LONG_P&L:",total_long_pnl)
+print("TOTAL_SHORT_P&L:",total_short_pnl)
+print("      TOTAL_P&L:",TOTAL_P_L)
+print(" num of trades :",num_of_trades)
+print("-------------------------------------")
 
