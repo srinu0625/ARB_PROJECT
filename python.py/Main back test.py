@@ -195,4 +195,5 @@ print("TOTAL_SHORT_P&L:",total_short_pnl)
 print("      TOTAL_P&L:",TOTAL_P_L)
 print(" num of trades :",num_of_trades)
 print("-------------------------------------")
+print("--------------------------------------")
 
