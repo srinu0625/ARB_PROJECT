@@ -175,8 +175,7 @@ for index, row in data.iterrows():
 
             # Update previous high
             prev_high = current_high
-
-
+         
     except Exception as e:
         print("Error processing row:", e)
     finally:
