@@ -1,8 +1,7 @@
 from turtle import position
 import pandas as pd
-import time
 
-file_path = r"C:\Users\srinu\Downloads\recent download\ES_BIG_DATA_10MIN (1).csv"
+file_path = r"D:\SNP_30min_1oct-15marc.csv"
 
 # Load the data
 try:
@@ -19,7 +18,7 @@ print("1st row", data.iloc[0].tolist())
 # Assuming the column names for high and low are 'High' and 'Low'
 high_column_name = 'High'
 low_column_name = 'Low'
-time_column_name = 'time'
+time_column_name = 'Date (GMT)'
 # temp column names
 temp_high = 0
 temp_low = 0
@@ -186,15 +185,14 @@ for index, row in data.iterrows():
 
     finally:
         print("-----------------------------End of iteration---------------------------------")
-print("    postive_p&l:", total_positive_pnl)
-print("   negative_p&l:",total_negative_pnl)
-print("     MAX_PROFIT:", max_profit)  
-print("       MAX_LOSS:",max_loss)
-print(" TOTAL_LONG_P&L:",total_long_pnl)
-print("TOTAL_SHORT_P&L:",total_short_pnl)
-print("      TOTAL_P&L:",TOTAL_P_L)
-print(" num of trades :",num_of_trades)
-print("-------------------------------------")
-print("-----------------------------------------------------------")
-print("nani")
+
+    
+print("    postive_p&l= ",total_positive_pnl)
+print("   negative_p&l= ",total_negative_pnl)
+print("     MAX_PROFIT= ",max_profit)  
+print("       MAX_LOSS= ",max_loss)
+print(" TOTAL_LONG_P&L= ",total_long_pnl)
+print("TOTAL_SHORT_P&L= ",total_short_pnl)
+print("      TOTAL_P&L= ",TOTAL_P_L)
+print(" num of trades = ",num_of_trades)
 

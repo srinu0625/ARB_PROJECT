@@ -2,7 +2,7 @@ from turtle import position
 import pandas as pd
 import time
 
-file_path = r"D:\SNP_30min_1oct-15marc.csv"
+file_path = r"D:\SNP_daily_1nov-15marc.csv"
 
 # Load the data
 try:
@@ -49,8 +49,8 @@ TOTAL_P_L=0
 # total long and short pnl
 total_long_pnl=0
 total_short_pnl=0
-total_positive_pnl=0
-total_negative_pnl=0
+positive_pnl=0
+negative_pnl=0
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
@@ -68,41 +68,33 @@ for index, row in data.iterrows():
 
         if current_low < previous_low:
             temp_low = current_low
-        # case 2------------------------------------------------------------------------------------
-        if current_high > previous_high:
-            local_low = temp_low
-
-        if current_low < previous_low:
-            local_high = temp_high
 
         # Printing data
         print("Time:", current_time)
-        print("Current High :", current_high, "Previous High :", previous_high, "local_high :", local_high
-              , " temp_high :", temp_high)
-        print("Current Low :", current_low, "Previous Low :", previous_low, "local_low :", local_low
-              , " temp_low :", temp_low)
+        print("Current High :", current_high, "Previous High :", previous_high)
+        print("Current Low :", current_low, "Previous Low :", previous_low)
     
 
         # bullish candle---------------------------------------------------------------------------
-        if current_high > local_high and not bear and not flag:
+        if current_high > previous_high and not bear and not flag:
             number_of_positions +=1
             entry_price = current_high
-            print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m") # ANSI escape codes for this color coding to work
-            print("current_high : ",current_high),print("local_high : ",local_high)
-            print("number_of_positions : ",number_of_positions)
-            print("long_entry_price: ",entry_price)
+            print("\033[32m--SNP500 LONG ENTRY-- (CH > PH)\033[0m") # ANSI escape codes for this color coding to work
+            print("current_high : ",current_high),print("previous_high : ",previous_high)
+            print("number_of_positions =",number_of_positions)
+            print("long_entry_price =",entry_price)
             bull = True
             flag = True
             continue
 
-        if current_low < local_low and bull and flag:
+        if current_low < previous_low and bull and flag:
             number_of_positions -=1
             num_of_trades+=1
             exit_price = current_low
-            print("\033[32m--SNP500 LONG EXIT-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
-            print("current_low :",current_low),print("local_low :",local_low)
-            print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
-            print( "long_exit_price: ",exit_price)
+            print("\033[32m--SNP500 LONG EXIT-- (CL < PL)\033[0m") # ANSI escape codes for this color coding to work
+            print("current_low :",current_low),print("previous_low :",previous_low)
+            print("number_of_positions =",number_of_positions),print("num_of_trades = ",num_of_trades)
+            print( "long_exit_price =",exit_price)
             bull = False
             flag = False
 
@@ -123,9 +115,9 @@ for index, row in data.iterrows():
                 pnl_color = "\033[31m"  # Red color
         # Add to total positive or negative P&L based on the result
             if pnl >= 0:
-                total_positive_pnl += pnl
+                positive_pnl += pnl
             else:
-                total_negative_pnl += pnl
+                negative_pnl += pnl
 
             print("P&L for this trade:",pnl_color, integer_pnl,"\033[0m")
             print("        max_profit:",max_profit)
@@ -133,25 +125,25 @@ for index, row in data.iterrows():
             continue
 
         # bearish candle-------------------------------------------------------------------------
-        if current_low < local_low and not bull and not flag:
+        if current_low < previous_low and not bull and not flag:
             number_of_positions +=1
             entry_price=current_low
-            print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
+            print("\033[31m--SNP500 SHORT ENTRY-- (CL < PL)\033[0m") # ANSI escape codes for this color coding to work
             print("current_low :",current_low)
-            print("local_low :",local_low),print("number_of_positions : ",number_of_positions)
-            print("short_entry_price: ",entry_price)
+            print("previous_low :",previous_low),print("number_of_positions : ",number_of_positions)
+            print("short_entry_price = ",entry_price)
             bear = True
             flag = True
             continue
 
-        if current_high > local_high and bear and flag:
+        if current_high > previous_high and bear and flag:
             number_of_positions -=1
             num_of_trades +=1  
             exit_price=current_high       
-            print("\033[31m--SNP500 SHORT EXIT-- (CH > LH)\033[0m") #  ANSI escape codes for this color coding to work 
-            print("current_high :",current_high), print("local_high :",local_high),
+            print("\033[31m--SNP500 SHORT EXIT-- (CH > PH)\033[0m") #  ANSI escape codes for this color coding to work 
+            print("current_high :",current_high), print("previous_high :",previous_high),
             print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
-            print("short_exit_price: ",exit_price)
+            print("short_exit_price = ",exit_price)
             bear = False
             flag = False
 
@@ -172,26 +164,30 @@ for index, row in data.iterrows():
                 pnl_color = "\033[31m"  # Red color
 
         # Add to total positive or negative P&L based on the result
-            if pnl >= 0:
-                total_positive_pnl += pnl
-            else:
-                total_negative_pnl += pnl
-            print("P&L for this trade:",pnl_color, integer_pnl,"\033[0m")
-            print("        max_profit:",max_profit)
-            print("          max_loss:",max_loss)
-            continue
-    
+                if pnl >= 0:
+                    positive_pnl += pnl
+                else:
+                    negative_pnl += pnl
+
+                print("P&L for this trade:", pnl_color, integer_pnl, "\033[0m")
+                print("max_profit:", max_profit)
+                print("max_loss:", max_loss)
+
+            # Update previous high
+            prev_high = current_high
+
+
     except Exception as e:
-        print("Error:", e)
-
+        print("Error processing row:", e)
     finally:
-        print("-----------------------------End of iteration---------------------------------")
-print("    postive_p&l:", total_positive_pnl)
-print("   negative_p&l:",total_negative_pnl)
-print("     MAX_PROFIT:", max_profit)  
-print("       MAX_LOSS:",max_loss)
-print(" TOTAL_LONG_P&L:",total_long_pnl)
-print("TOTAL_SHORT_P&L:",total_short_pnl)
-print("      TOTAL_P&L:",TOTAL_P_L)
-print(" num of trades :",num_of_trades)
+        print("---------------------------End of iteration--------------------------")
 
+print("        max_profit= ",max_profit)
+print("          max_loss= ",max_loss)
+print("         TOTAL_P_L= ",TOTAL_P_L)
+print("     num of trades= ",num_of_trades)
+print("total_positive_pnl= ",positive_pnl)
+print("total_negative_pnl= ",negative_pnl)
+print("   total_long_pnl = ",total_long_pnl)
+print("  total_short_pnl = ",total_short_pnl)
+           
