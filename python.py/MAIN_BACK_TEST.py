@@ -1,7 +1,7 @@
 from turtle import position
 import pandas as pd
 
-file_path = r"D:\SNP_30min_1oct-15marc.csv"
+file_path = r"D:\SNP_daily_1nov-15marc.csv"
 
 # Load the data
 try:
