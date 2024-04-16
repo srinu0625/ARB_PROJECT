@@ -1,4 +1,3 @@
-from turtle import position
 import pandas as pd
 
 file_path = r"D:\SNP_30min_1oct-15marc.csv"
@@ -61,7 +60,7 @@ for index, row in data.iterrows():
         current_low = float(row[low_column_name])
         previous_low = float(data.at[index - 1, low_column_name] if index > 0 else 0)
 
-         # case 1------------------------------------------------------------------------------------
+         # case 1-----------------------------------------------------------------------------------
         if current_high > previous_high:
             temp_high = current_high
 
@@ -80,6 +79,8 @@ for index, row in data.iterrows():
               , " temp_high :", temp_high)
         print("Current Low :", current_low, "Previous Low :", previous_low, "local_low :", local_low
               , " temp_low :", temp_low)
+        #time.sleep(2)
+        
     
 
         # bullish candle---------------------------------------------------------------------------
