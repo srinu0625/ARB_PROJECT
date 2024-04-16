@@ -3,7 +3,7 @@
     "files.associations": {
         "iostream": "cpp"
     },
-    "workbench.colorTheme": "Visual Studio 2017 Dark - C++",
+    "workbench.colorTheme": "Default Dark Modern",
     "git.enabled": true,
     "python.testing.pytestArgs": [
         "python.py"
@@ -12,5 +12,7 @@
     "python.testing.pytestEnabled": true,
     "terminal.integrated.accessibleViewFocusOnCommandExecution": true,
     "terminal.integrated.accessibleViewPreserveCursorPosition": true,
-    "terminal.explorerKind": "integrated"
+    "terminal.explorerKind": "integrated",
+    "print.folder.maxLines": 2000,
+    "terminal.integrated.bellDuration": 10000
 }

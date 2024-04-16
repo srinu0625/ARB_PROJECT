@@ -4,7 +4,7 @@ Buy_value = 0
 Sell_value = 0
 Buy_Quantity = 0
 Sell_Quantity = 0
-file_path = r"https://d.docs.live.net/f770b23a076c61f6/Pictures/Trade_Book_Export-20240301_2.35.10.xlsx"
+file_path = r"C:\Users\srinu\Downloads\Trade_Book_Export-20240415_23.41.52.xlsx"
 
 try:
     data = pd.read_excel(file_path, sheet_name='MYMM4')

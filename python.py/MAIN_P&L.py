@@ -8,7 +8,7 @@ Buy_Quantity = 0
 Sell_Quantity = 0
 
 # File paths
-input_file_path = r"D:\pra.xlsx"
+input_file_path = r"C:\Users\srinu\Downloads\downloaded softwares\12.xlsx"
 output_file_path = r"D:\\Modified_P&L.xlsx"
 
 # Ensure the output directory exists
