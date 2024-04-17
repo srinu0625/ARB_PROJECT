@@ -194,11 +194,10 @@ for index, row in data.iterrows():
     finally:
         print("-----------------------------End of iteration---------------------------------")
 
-    
+print("       MAX_LOSS= ",max_loss)         
+print("     MAX_PROFIT= ",max_profit)    
 print("    postive_p&l= ",total_positive_pnl)
 print("   negative_p&l= ",total_negative_pnl)
-print("     MAX_PROFIT= ",max_profit)  
-print("       MAX_LOSS= ",max_loss)
 print(" TOTAL_LONG_P&L= ",total_long_pnl)
 print("TOTAL_SHORT_P&L= ",total_short_pnl)
 print("      TOTAL_P&L= ",TOTAL_P_L)
