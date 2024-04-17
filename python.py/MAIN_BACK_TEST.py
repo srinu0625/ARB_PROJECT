@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\ym hourly.csv"
+file_path = r"D:\ym daily.csv"
 
 # Load the data
 try:
@@ -18,6 +18,7 @@ print("1st row", data.iloc[0].tolist())
 high_column_name = 'High'
 low_column_name = 'Low'
 time_column_name = 'Date (GMT)'
+
 # temp column names
 temp_high = 0
 temp_low = 0
@@ -59,6 +60,14 @@ for index, row in data.iterrows():
         previous_high = float(data.at[index - 1, high_column_name] )
         current_low = float(row[low_column_name])
         previous_low = float(data.at[index - 1, low_column_name] )
+
+        # If entry occurs, append entry details to trades_entry
+        if trade_entry:
+            trade_entry.append((current_time, entry_price))
+
+        # If exit occurs, append exit details to trades_exit
+        if trade_exit:
+            trade_exit.append((current_time, exit_price))
 
          # case 1-----------------------------------------------------------------------------------
         if current_high > previous_high:
@@ -103,8 +112,6 @@ for index, row in data.iterrows():
             print("current_low :",current_low),print("local_low :",local_low)
             print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
             print( "long_exit_price: ",exit_price)
-            print("exit_price = ",exit_price)
-            print("entry_price = ",entry_price)
             print(exit_price-entry_price)
             bull = False
             flag = False
@@ -155,10 +162,7 @@ for index, row in data.iterrows():
             print("current_high :",current_high), print("local_high :",local_high),
             print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
             print("short_exit_price: ",exit_price)
-            print("entry_price = ",entry_price)
-            print("exit_price = ",exit_price)
             print(entry_price-exit_price)
-
             bear = False
             flag = False
 
@@ -202,4 +206,3 @@ print(" TOTAL_LONG_P&L= ",total_long_pnl)
 print("TOTAL_SHORT_P&L= ",total_short_pnl)
 print("      TOTAL_P&L= ",TOTAL_P_L)
 print(" num of trades = ",num_of_trades)
-
