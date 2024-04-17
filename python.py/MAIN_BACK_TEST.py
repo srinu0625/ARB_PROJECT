@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\SNP_30min_1oct-15marc.csv"
+file_path = r"D:\ym hourly.csv"
 
 # Load the data
 try:
@@ -84,9 +84,9 @@ for index, row in data.iterrows():
     
 
         # bullish candle---------------------------------------------------------------------------
-        if current_high > local_high and not bear and not flag:
+        if current_high > local_high and local_high!=0 and local_low!=0  and not bear and not flag:
             number_of_positions +=1
-            entry_price = current_high
+            entry_price = local_high
             print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m") # ANSI escape codes for this color coding to work
             print("current_high : ",current_high),print("local_high : ",local_high)
             print("number_of_positions : ",number_of_positions)
@@ -98,11 +98,14 @@ for index, row in data.iterrows():
         if current_low < local_low and bull and flag:
             number_of_positions -=1
             num_of_trades+=1
-            exit_price = current_low
+            exit_price = local_low
             print("\033[32m--SNP500 LONG EXIT-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
             print("current_low :",current_low),print("local_low :",local_low)
             print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
             print( "long_exit_price: ",exit_price)
+            print("exit_price = ",exit_price)
+            print("entry_price = ",entry_price)
+            print(exit_price-entry_price)
             bull = False
             flag = False
 
@@ -133,9 +136,9 @@ for index, row in data.iterrows():
             continue
 
         # bearish candle-------------------------------------------------------------------------
-        if current_low < local_low and not bull and not flag:
+        if current_low < local_low and local_high!=0 and local_low!=0  and not bull and not flag:
             number_of_positions +=1
-            entry_price=current_low
+            entry_price=local_low
             print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
             print("current_low :",current_low)
             print("local_low :",local_low),print("number_of_positions : ",number_of_positions)
@@ -147,11 +150,15 @@ for index, row in data.iterrows():
         if current_high > local_high and bear and flag:
             number_of_positions -=1
             num_of_trades +=1  
-            exit_price=current_high       
+            exit_price=local_high     
             print("\033[31m--SNP500 SHORT EXIT-- (CH > LH)\033[0m") #  ANSI escape codes for this color coding to work 
             print("current_high :",current_high), print("local_high :",local_high),
             print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
             print("short_exit_price: ",exit_price)
+            print("entry_price = ",entry_price)
+            print("exit_price = ",exit_price)
+            print(entry_price-exit_price)
+
             bear = False
             flag = False
 
