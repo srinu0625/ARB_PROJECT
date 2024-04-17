@@ -56,9 +56,9 @@ for index, row in data.iterrows():
         # Extracting current and previous values for high and low
         current_time = row[time_column_name]
         current_high = float(row[high_column_name])
-        previous_high = float(data.at[index - 1, high_column_name] if index > 0 else 0)
+        previous_high = float(data.at[index - 1, high_column_name] )
         current_low = float(row[low_column_name])
-        previous_low = float(data.at[index - 1, low_column_name] if index > 0 else 0)
+        previous_low = float(data.at[index - 1, low_column_name] )
 
          # case 1-----------------------------------------------------------------------------------
         if current_high > previous_high:
