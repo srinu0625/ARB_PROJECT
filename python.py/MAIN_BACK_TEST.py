@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\ym daily.csv"
+file_path = r"D:\ym hourly.csv"
 
 # Load the data
 try:
@@ -60,14 +60,6 @@ for index, row in data.iterrows():
         previous_high = float(data.at[index - 1, high_column_name] )
         current_low = float(row[low_column_name])
         previous_low = float(data.at[index - 1, low_column_name] )
-
-        # If entry occurs, append entry details to trades_entry
-        if trade_entry:
-            trade_entry.append((current_time, entry_price))
-
-        # If exit occurs, append exit details to trades_exit
-        if trade_exit:
-            trade_exit.append((current_time, exit_price))
 
          # case 1-----------------------------------------------------------------------------------
         if current_high > previous_high:
