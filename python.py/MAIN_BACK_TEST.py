@@ -139,7 +139,7 @@ for index, row in data.iterrows():
             number_of_positions +=1
             entry_price=local_low
             print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m") # ANSI escape codes for this color coding to work
-            print("current_low :",current_low)print("local_low :",local_low)
+            print("current_low :",current_low),print("local_low :",local_low)
             print("number_of_positions =",number_of_positions)
             print("  short_entry_price = ",entry_price)
             bear = True
