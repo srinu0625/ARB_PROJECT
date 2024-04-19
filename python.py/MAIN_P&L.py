@@ -94,5 +94,4 @@ with pd.ExcelWriter(output_file_path, mode='a', engine='openpyxl') as writer:
         # Append the data to the existing sheet or create a new sheet
         symbol_data.to_excel(writer, index=False, sheet_name=sheet_name, startrow=writer.sheets[sheet_name].max_row if sheet_name in writer.sheets else 0)
        
-
 print("Data has been written to the Excel file and saved to----- D:disk.")

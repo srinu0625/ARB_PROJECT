@@ -162,11 +162,20 @@ for index, row in data.iterrows():
     finally:
         print("---------------------------End of iteration--------------------------")
 
-print("        max_profit = ",max_profit)
-print("          max_loss = ",max_loss)
-print("total_positive_pnl = ",positive_pnl)
-print("total_negative_pnl = ",negative_pnl)
-print("   total_long_pnl  = ",total_long_pnl)
-print("  total_short_pnl  = ",total_short_pnl)
-print("         TOTAL_P_L = ",TOTAL_P_L)
+max_loss_color="\033[31m"if max_loss < 0 else "\033[32m"
+max_profit_color="\033[31m"if max_profit < 0 else "\033[32m"
+positive_pnl_color="\033[31m"if positive_pnl < 0 else "\033[32m"
+negative_pnl_color="\033[31m"if negative_pnl < 0 else "\033[32m"
+total_long_pnl_color="\033[31m"if total_long_pnl < 0 else "\033[32m"
+total_short_pnl_color="\033[31m"if total_short_pnl < 0 else "\033[32m"
+TOTAL_P_L_colour="\033[31m"if TOTAL_P_L < 0 else "\033[32m"
+
+
+print("        max_profit = ",max_profit_color, max_profit, "\033[0m")
+print("          max_loss = ",max_loss_color, max_loss, "\033[0m")
+print("      positive_pnl = ",positive_pnl_color,positive_pnl,"\033[0m")
+print("      negative_pnl = ",negative_pnl_color,negative_pnl,"\033[0m")
+print("   total_long_pnl  = ",total_long_pnl_color,total_long_pnl,"\033[0m")
+print("  total_short_pnl  = ",total_short_pnl_color,total_short_pnl,"\033[0m")
+print("         TOTAL_P_L = ",TOTAL_P_L_colour,TOTAL_P_L,"\033[0m")
 print("     num of trades = ",num_of_trades)

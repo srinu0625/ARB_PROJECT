@@ -48,8 +48,9 @@ TOTAL_P_L=0
 # total long and short pnl
 total_long_pnl=0
 total_short_pnl=0
-total_positive_pnl=0
-total_negative_pnl=0
+positive_pnl=0
+negative_pnl=0
+
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
@@ -82,8 +83,6 @@ for index, row in data.iterrows():
               , " temp_low :", temp_low)
         #time.sleep(2)
         
-    
-
         # bullish candle---------------------------------------------------------------------------
         if current_high > local_high and local_high!=0 and local_low!=0  and not bear and not flag:
             number_of_positions +=1
@@ -123,11 +122,12 @@ for index, row in data.iterrows():
                 pnl_color = "\033[32m"  # Green color
             else:
                 pnl_color = "\033[31m"  # Red color
+                                
         # Add to total positive or negative P&L based on the result
             if pnl >= 0:
-                total_positive_pnl += pnl
+                positive_pnl += pnl
             else:
-                total_negative_pnl += pnl
+                negative_pnl += pnl
 
             print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
             print("        max_profit = ",max_profit)
@@ -176,9 +176,9 @@ for index, row in data.iterrows():
 
         # Add to total positive or negative P&L based on the result
             if pnl >= 0:
-                total_positive_pnl += pnl
+                positive_pnl += pnl
             else:
-                total_negative_pnl += pnl
+                negative_pnl += pnl
             print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
             print("        max_profit = ",max_profit)
             print("          max_loss = ",max_loss)
@@ -190,12 +190,20 @@ for index, row in data.iterrows():
     finally:
         print("-----------------------------End of iteration---------------------------------")
 
-print("       MAX_LOSS = ",max_loss)         
-print("     MAX_PROFIT = ",max_profit)    
-print("    postive_p&l = ",total_positive_pnl)
-print("   negative_p&l = ",total_negative_pnl)
-print(" TOTAL_LONG_P&L = ",total_long_pnl)
-print("TOTAL_SHORT_P&L = ",total_short_pnl)
-print("      TOTAL_P&L = ",TOTAL_P_L)
-print(" num of trades  = ",num_of_trades)
+max_loss_color="\033[31m"if max_loss < 0 else "\033[32m"
+max_profit_color="\033[31m"if max_profit < 0 else "\033[32m"
+positive_pnl_color="\033[31m"if positive_pnl < 0 else "\033[32m"
+negative_pnl_color="\033[31m"if negative_pnl < 0 else "\033[32m"
+total_long_pnl_color="\033[31m"if total_long_pnl < 0 else "\033[32m"
+total_short_pnl_color="\033[31m"if total_short_pnl < 0 else "\033[32m"
+TOTAL_P_L_colour="\033[31m"if TOTAL_P_L < 0 else "\033[32m"
 
+
+print("        max_profit = ",max_profit_color, max_profit, "\033[0m")
+print("          max_loss = ",max_loss_color, max_loss, "\033[0m")
+print("      positive_pnl = ",positive_pnl_color,positive_pnl,"\033[0m")
+print("      negative_pnl = ",negative_pnl_color,negative_pnl,"\033[0m")
+print("   total_long_pnl  = ",total_long_pnl_color,total_long_pnl,"\033[0m")
+print("  total_short_pnl  = ",total_short_pnl_color,total_short_pnl,"\033[0m")
+print("         TOTAL_P_L = ",TOTAL_P_L_colour,TOTAL_P_L,"\033[0m")
+print("     num of trades = ",num_of_trades)
