@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\snp 1nov-15 mar.csv"
+file_path = r"D:\es hourly.csv"
 
 # Load the data
 try:
@@ -178,7 +178,7 @@ for index, row in data.iterrows():
         print("Error processing row:", e)
     finally:
         print("---------------------------End of iteration--------------------------")
-
+# colour coding the end  values
 max_loss_color="\033[31m"if max_loss < 0 else "\033[32m"
 max_profit_color="\033[31m"if max_profit < 0 else "\033[32m"
 positive_pnl_color="\033[31m"if positive_pnl < 0 else "\033[32m"
@@ -186,7 +186,6 @@ negative_pnl_color="\033[31m"if negative_pnl < 0 else "\033[32m"
 total_long_pnl_color="\033[31m"if total_long_pnl < 0 else "\033[32m"
 total_short_pnl_color="\033[31m"if total_short_pnl < 0 else "\033[32m"
 TOTAL_P_L_colour="\033[31m"if TOTAL_P_L < 0 else "\033[32m"
-
 
 print("        max_profit = ",max_profit_color, max_profit, "\033[0m")
 print("          max_loss = ",max_loss_color, max_loss, "\033[0m")
@@ -196,4 +195,4 @@ print("   total_long_pnl  = ",total_long_pnl_color,total_long_pnl,"\033[0m")
 print("  total_short_pnl  = ",total_short_pnl_color,total_short_pnl,"\033[0m")
 print("         TOTAL_P_L = ",TOTAL_P_L_colour,TOTAL_P_L,"\033[0m")
 print("     num of trades = ",num_of_trades)
-           
+                 
