@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\snp 30 min 2jan-19mar.csv"
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
