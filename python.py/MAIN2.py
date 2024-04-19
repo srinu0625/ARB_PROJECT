@@ -76,9 +76,8 @@ for index, row in data.iterrows():
             number_of_positions +=1
             entry_price = previous_high
             print("\033[32m--SNP500 LONG ENTRY-- (CH > PH)\033[0m",file_path) # ANSI escape codes for this color coding to work
-            print("current_high : ",current_high),print("previous_high : ",previous_high)
             print("number_of_positions =",number_of_positions)
-            print("long_entry_price =",entry_price)
+            print("   long_entry_price =",entry_price)
             bull = True
             continue
 
@@ -87,9 +86,8 @@ for index, row in data.iterrows():
             number_of_positions -=1
             num_of_trades+=1
             print("\033[32m--SNP500 LONG EXIT-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
-            print("current_low :",current_low),print("previous_low :",previous_low)
             print("number_of_positions =",number_of_positions),print("num_of_trades = ",num_of_trades)
-            print( "long_exit_price =",exit_price)
+            print( "   long_exit_price =",exit_price)
             bull = False
 
             # Calculate P&L
@@ -111,28 +109,6 @@ for index, row in data.iterrows():
             else:
                 negative_pnl += pnl
 
-            print("P&L for this trade:",pnl_color, integer_pnl,"\033[0m")
-            print("        max_profit:",max_profit)
-            print("          max_loss:",max_loss)
-
-            # declaring maxloss and maxprofit
-            max_profit=max(max_profit,pnl)
-            max_loss=min(max_loss,pnl)
-
-            # Check if integer part of P&L is positive or negative and set color accordingly
-    
-            pnl_color = "\033[32m" if integer_pnl >= 0 else "\033[31m"
-
-            # Add to total positive or negative P&L based on the result
-            if pnl >= 0:
-                positive_pnl += pnl
-            else:
-                negative_pnl += pnl
-
-            print("P&L for this trade:",pnl_color, integer_pnl,"\033[0m")
-            print("        max_profit:",max_profit)
-            print("          max_loss:",max_loss)
-
             continue
         # bearish candle-------------------------------------------------------------------------------------------
 
@@ -140,9 +116,8 @@ for index, row in data.iterrows():
             number_of_positions +=1
             entry_price = previous_low
             print("\033[31m--SNP500 SHORT ENTRY-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
-            print("current_low :",current_low)
-            print("previous_low :",previous_low),print("number_of_positions : ",number_of_positions)
-            print("short_entry_price = ",entry_price)
+            print("number_of_positions =",number_of_positions)
+            print("  short_entry_price = ",entry_price)
             bear = True
 
         if current_high > previous_high and bear==True:
@@ -150,9 +125,8 @@ for index, row in data.iterrows():
             number_of_positions -=1
             num_of_trades +=1  
             print("\033[31m--SNP500 SHORT EXIT-- (CH > PH)\033[0m",file_path) #  ANSI escape codes for this color coding to work 
-            print("current_high :",current_high), print("previous_high :",previous_high),
-            print("number_of_positions : ",number_of_positions),print("num_of_trades = ",num_of_trades)
-            print("short_exit_price = ",exit_price)
+            print("number_of_positions =",number_of_positions),print("num_of_trades = ",num_of_trades)
+            print("   short_exit_price = ",exit_price)
             bear = False
 
 
@@ -175,9 +149,10 @@ for index, row in data.iterrows():
             else:
                 negative_pnl += pnl
 
-            print("P&L for this trade:", pnl_color, integer_pnl, "\033[0m")
-            print("max_profit:", max_profit)
-            print("max_loss:", max_loss)
+            print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
+            print("        max_profit = ",max_profit)
+            print("          max_loss = ",max_loss)
+
 
             continue
         
@@ -187,11 +162,11 @@ for index, row in data.iterrows():
     finally:
         print("---------------------------End of iteration--------------------------")
 
-print("        max_profit= ",max_profit)
-print("          max_loss= ",max_loss)
-print("total_positive_pnl= ",positive_pnl)
-print("total_negative_pnl= ",negative_pnl)
-print("   total_long_pnl = ",total_long_pnl)
-print("  total_short_pnl = ",total_short_pnl)
-print("         TOTAL_P_L= ",TOTAL_P_L)
-print("     num of trades= ",num_of_trades)
+print("        max_profit = ",max_profit)
+print("          max_loss = ",max_loss)
+print("total_positive_pnl = ",positive_pnl)
+print("total_negative_pnl = ",negative_pnl)
+print("   total_long_pnl  = ",total_long_pnl)
+print("  total_short_pnl  = ",total_short_pnl)
+print("         TOTAL_P_L = ",TOTAL_P_L)
+print("     num of trades = ",num_of_trades)
