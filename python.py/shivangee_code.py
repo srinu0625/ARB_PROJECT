@@ -37,7 +37,7 @@ num_of_trades=0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 50 
+contract_size = 20 
 # maxloss maxprofit
 max_loss=0 
 max_profit=0 
@@ -52,132 +52,134 @@ negative_pnl=0
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
-    try:
-        # Extracting current and previous values for high and low
-        current_time = row[time_column_name]
-        current_high = float(row[high_column_name])
-        previous_high = float(data.at[index - 1, high_column_name] )
-        current_low = float(row[low_column_name])
-        previous_low = float(data.at[index - 1, low_column_name] )
+    # adding a check point  to not process the balck or nan values in excel
+    if pd.notna(row[time_column_name]) and pd.notna(row[high_column_name]) and pd.notna(row[low_column_name]):
+        try:
+            # Extracting current and previous values for high and low
+            current_time = row[time_column_name]
+            current_high = float(row[high_column_name])
+            previous_high = float(data.at[index - 1, high_column_name] )
+            current_low = float(row[low_column_name])
+            previous_low = float(data.at[index - 1, low_column_name] )
 
-         # case 1------------------------------------------------------------------------------------
-        if current_high > previous_high:
-            temp_high = current_high
+            # case 1------------------------------------------------------------------------------------
+            if current_high > previous_high:
+                temp_high = current_high
 
-        if current_low < previous_low:
-            temp_low = current_low
+            if current_low < previous_low:
+                temp_low = current_low
 
-        # Printing data
-        print("Time:", current_time)
-        print("Current High :", current_high, "Previous High :", previous_high)
-        print("Current Low :", current_low, "Previous Low :", previous_low)
-    
+            # Printing data
+            print("Time:", current_time)
+            print("Current High :", current_high, "Previous High :", previous_high)
+            print("Current Low :", current_low, "Previous Low :", previous_low)
+        
 
-        # bullish candle---------------------------------------------------------------------------
-        if current_high > previous_high and not bear and not flag:
-            number_of_positions +=1
-            entry_price = previous_high
-            print("\033[32m--SNP500 LONG ENTRY-- (CH > PH)\033[0m",file_path) # ANSI escape codes for this color coding to work
-            print("current_high : ",current_high),print("previous_high : ",previous_high)
-            print("number_of_positions =",number_of_positions)
-            print("   long_entry_price =",entry_price)
-            bull = True
-            flag = True
-            continue
+            # bullish candle---------------------------------------------------------------------------
+            if current_high > previous_high and not bear and not flag:
+                number_of_positions +=1
+                entry_price = previous_high
+                print("\033[32m--SNP500 LONG ENTRY-- (CH > PH)\033[0m",file_path) # ANSI escape codes for this color coding to work
+                print("current_high : ",current_high),print("previous_high : ",previous_high)
+                print("number_of_positions =",number_of_positions)
+                print("   long_entry_price =",entry_price)
+                bull = True
+                flag = True
+                continue
 
-        if current_low < previous_low and bull and flag:
-            number_of_positions -=1
-            num_of_trades+=1
-            exit_price = previous_low
-            print("\033[32m--SNP500 LONG EXIT-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
-            print("current_low :",current_low),print("previous_low :",previous_low)
-            print("number_of_positions =",number_of_positions),print("num_of_trades = ",num_of_trades)
-            print("    long_exit_price =",exit_price)
-            bull = False
-            flag = False
+            if current_low < previous_low and bull and flag:
+                number_of_positions -=1
+                num_of_trades+=1
+                exit_price = previous_low
+                print("\033[32m--SNP500 LONG EXIT-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
+                print("current_low :",current_low),print("previous_low :",previous_low)
+                print("number_of_positions =",number_of_positions),print("num_of_trades = ",num_of_trades)
+                print("    long_exit_price =",exit_price)
+                bull = False
+                flag = False
 
-        # Calculate P&L
-            pnl = (exit_price - entry_price) * 1 *contract_size
-            TOTAL_P_L+=pnl
-            total_long_pnl+=pnl
-            integer_pnl = float(pnl)  # Extract the integer part of the P&L
+            # Calculate P&L
+                pnl = (exit_price - entry_price) * 1 *contract_size
+                TOTAL_P_L+=pnl
+                total_long_pnl+=pnl
+                integer_pnl = float(pnl)  # Extract the integer part of the P&L
 
-        # declaring maxloss and maxprofit
-            max_profit=max(max_profit,pnl)
-            max_loss=min(max_loss,pnl)
+            # declaring maxloss and maxprofit
+                max_profit=max(max_profit,pnl)
+                max_loss=min(max_loss,pnl)
 
-        # Check if integer part of P&L is positive or negative and set color accordingly
-            if integer_pnl >= 0:
-                pnl_color = "\033[32m"  # Green color
-            else:
-                pnl_color = "\033[31m"  # Red color
-        # Add to total positive or negative P&L based on the result
-            if pnl >= 0:
-                positive_pnl += pnl
-            else:
-                negative_pnl += pnl
+            # Check if integer part of P&L is positive or negative and set color accordingly
+                if integer_pnl >= 0:
+                    pnl_color = "\033[32m"  # Green color
+                else:
+                    pnl_color = "\033[31m"  # Red color
+            # Add to total positive or negative P&L based on the result
+                if pnl >= 0:
+                    positive_pnl += pnl
+                else:
+                    negative_pnl += pnl
 
-            print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
-            print("        max_profit = ",max_profit)
-            print("          max_loss = ",max_loss)
-            continue
+                print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
+                print("        max_profit = ",max_profit)
+                print("          max_loss = ",max_loss)
+                continue
 
-        # bearish candle-------------------------------------------------------------------------
-        if current_low < previous_low and not bull and not flag:
-            number_of_positions +=1
-            entry_price = previous_low
-            print("\033[31m--SNP500 SHORT ENTRY-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
-            print("current_low :",current_low),print("previous_low :",previous_low)
-            print("number_of_positions = ",number_of_positions)
-            print("  short_entry_price = ",entry_price)
-            bear = True
-            flag = True
-            continue
+            # bearish candle-------------------------------------------------------------------------
+            if current_low < previous_low and not bull and not flag:
+                number_of_positions +=1
+                entry_price = previous_low
+                print("\033[31m--SNP500 SHORT ENTRY-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
+                print("current_low :",current_low),print("previous_low :",previous_low)
+                print("number_of_positions = ",number_of_positions)
+                print("  short_entry_price = ",entry_price)
+                bear = True
+                flag = True
+                continue
 
-        if current_high > previous_high and bear and flag:
-            number_of_positions -=1
-            num_of_trades +=1  
-            exit_price = previous_high      
-            print("\033[31m--SNP500 SHORT EXIT-- (CH > PH)\033[0m",file_path) #  ANSI escape codes for this color coding to work 
-            print("current_high :",current_high), print("previous_high :",previous_high),
-            print("number_of_positions = ",number_of_positions),print("num_of_trades = ",num_of_trades)
-            print("   short_exit_price = ",exit_price)
-            bear = False
-            flag = False
+            if current_high > previous_high and bear and flag:
+                number_of_positions -=1
+                num_of_trades +=1  
+                exit_price = previous_high      
+                print("\033[31m--SNP500 SHORT EXIT-- (CH > PH)\033[0m",file_path) #  ANSI escape codes for this color coding to work 
+                print("current_high :",current_high), print("previous_high :",previous_high),
+                print("number_of_positions = ",number_of_positions),print("num_of_trades = ",num_of_trades)
+                print("   short_exit_price = ",exit_price)
+                bear = False
+                flag = False
 
-        # Calculate P&L
-            pnl = (entry_price - exit_price) * 1 *contract_size
-            TOTAL_P_L +=pnl
-            total_short_pnl+=pnl
-            integer_pnl = float(pnl)  # Extract the integer part of the P&L
+            # Calculate P&L
+                pnl = (entry_price - exit_price) * 1 *contract_size
+                TOTAL_P_L +=pnl
+                total_short_pnl+=pnl
+                integer_pnl = float(pnl)  # Extract the integer part of the P&L
 
-        # declaring maxloss and maxprofit
-            max_profit=max(max_profit,pnl)
-            max_loss=min(max_loss,pnl)
-      
-        # Check if integer part of P&L is positive or negative and set color accordingly
-            if integer_pnl >= 0:
-                pnl_color = "\033[32m"  # Green color
-            else:
-                pnl_color = "\033[31m"  # Red color
+            # declaring maxloss and maxprofit
+                max_profit=max(max_profit,pnl)
+                max_loss=min(max_loss,pnl)
+        
+            # Check if integer part of P&L is positive or negative and set color accordingly
+                if integer_pnl >= 0:
+                    pnl_color = "\033[32m"  # Green color
+                else:
+                    pnl_color = "\033[31m"  # Red color
 
-        # Add to total positive or negative P&L based on the result
-            if pnl >= 0:
-                positive_pnl += pnl
-            else:
-                negative_pnl += pnl
+            # Add to total positive or negative P&L based on the result
+                if pnl >= 0:
+                    positive_pnl += pnl
+                else:
+                    negative_pnl += pnl
 
-            print("P&L for this trade = ", pnl_color, integer_pnl, "\033[0m")
-            print("        max_profit = ", max_profit)
-            print("          max_loss =", max_loss)
+                print("P&L for this trade = ", pnl_color, integer_pnl, "\033[0m")
+                print("        max_profit = ", max_profit)
+                print("          max_loss =", max_loss)
 
-            # Update previous high
-            prev_high = current_high
-         
-    except Exception as e:
-        print("Error processing row:", e)
-    finally:
-        print("---------------------------End of iteration--------------------------")
+                # Update previous high
+                prev_high = current_high
+            
+        except Exception as e:
+            print("Error processing row:", e)
+        finally:
+            print("---------------------------End of iteration--------------------------")
 # colour coding the end  values
 max_loss_color="\033[31m"if max_loss < 0 else "\033[32m"
 max_profit_color="\033[31m"if max_profit < 0 else "\033[32m"

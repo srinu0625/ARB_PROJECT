@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\es hourly.csv"
+file_path = r"D:\ym daily.csv"
 
 # Load the data
 try:
@@ -38,7 +38,7 @@ num_of_trades=0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 50 
+contract_size = 5 
 # maxloss maxprofit
 max_loss=0 
 max_profit=0 
@@ -54,6 +54,7 @@ negative_pnl=0
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
+    # adding a check point  to not process the balck or nan values in excel
     if pd.notna(row[time_column_name]) and pd.notna(row[high_column_name]) and pd.notna(row[low_column_name]):
         try:
             # Extracting current and previous values for high and low
