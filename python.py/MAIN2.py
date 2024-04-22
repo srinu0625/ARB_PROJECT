@@ -1,6 +1,6 @@
 import pandas as pd
 
-file_path = r"D:\snp 1nov-15 mar.csv"
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
@@ -108,6 +108,10 @@ for index, row in data.iterrows():
                 positive_pnl += pnl
             else:
                 negative_pnl += pnl
+
+            print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
+            print("        max_profit = ",max_profit)
+            print("          max_loss = ",max_loss)
 
             continue
         # bearish candle-------------------------------------------------------------------------------------------
