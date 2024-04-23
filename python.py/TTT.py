@@ -128,7 +128,7 @@ for index, row in data.iterrows():
                 flag = False
 
                 # Calculate P&L
-                pnl = (exit_price - entry_price) * num_of_lots * contract_size
+                pnl = (exit_price - entry_price) * 1 * contract_size
                 TOTAL_P_L += pnl
                 total_long_pnl += pnl
                 integer_pnl = float(pnl)  # Extract the integer part of the P&L
@@ -185,7 +185,7 @@ for index, row in data.iterrows():
                 flag = False
 
                 # Calculate P&L
-                pnl = (entry_price - exit_price) * num_of_lots * contract_size
+                pnl = (entry_price - exit_price) * 1 * contract_size
                 TOTAL_P_L += pnl
                 total_short_pnl += pnl
                 integer_pnl = float(pnl)  # Extract the integer part of the P&L
