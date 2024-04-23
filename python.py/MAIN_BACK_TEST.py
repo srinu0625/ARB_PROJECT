@@ -2,7 +2,7 @@ import pandas as pd
 import time
 
 
-file_path = r"D:\es daily.csv"
+file_path = r"D:\es hourly.csv"
 
 # Load the data
 try:
@@ -106,13 +106,13 @@ for index, row in data.iterrows():
                 else: 
                     ( max_loss_for_trade <=risk)
                     num_of_lots = risk / max_loss_for_trade
-                    print("num_of_lots =",num_of_lots)
                     number_of_positions += 1
                     entry_price = local_high + (tick_val * 2)
                     print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
                     print("current_high = ", current_high), print("local_high = ", local_high)
                     print("number_of_positions = ", number_of_positions)
                     print("   long_entry_price = ", entry_price)
+                    print("        num_of_lots =",round(num_of_lots))
                     bull = True
                     flag = True
                     continue
@@ -165,13 +165,14 @@ for index, row in data.iterrows():
                 else: 
                     ( max_loss_for_trade <=risk)
                     num_of_lots = risk / max_loss_for_trade
-                    print("num_of_lots =",num_of_lots)
                     number_of_positions += 1
                     entry_price = local_low - (tick_val * 2)
                     print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
                     print("current_low :", current_low), print("local_low :", local_low)
                     print("number_of_positions =", number_of_positions)
                     print("  short_entry_price = ", entry_price)
+                    print("        num_of_lots =",round(num_of_lots))
+
                     bear = True
                     flag = True
                     continue
