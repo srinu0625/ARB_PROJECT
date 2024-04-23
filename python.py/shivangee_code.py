@@ -102,7 +102,7 @@ for index, row in data.iterrows():
                 pnl = (exit_price - entry_price) * 1 *contract_size
                 TOTAL_P_L+=pnl
                 total_long_pnl+=pnl
-                integer_pnl = float(pnl)  # Extract the integer part of the P&L
+                integer_pnl = int(pnl)  # Extract the integer part of the P&L
 
             # declaring maxloss and maxprofit
                 max_profit=max(max_profit,pnl)
@@ -151,7 +151,7 @@ for index, row in data.iterrows():
                 pnl = (entry_price - exit_price) * 1 *contract_size
                 TOTAL_P_L +=pnl
                 total_short_pnl+=pnl
-                integer_pnl = float(pnl)  # Extract the integer part of the P&L
+                integer_pnl = int(pnl)  # Extract the integer part of the P&L
 
             # declaring maxloss and maxprofit
                 max_profit=max(max_profit,pnl)

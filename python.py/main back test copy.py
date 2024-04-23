@@ -2,7 +2,7 @@ from turtle import position
 import pandas as pd
 import time
 
-file_path = r"D:\SNP_30min_1oct-15marc.csv"
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
