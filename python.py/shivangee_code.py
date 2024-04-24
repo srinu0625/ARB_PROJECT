@@ -1,5 +1,4 @@
 import pandas as pd
-
 file_path = r"D:\nq daily.csv"
 
 # Load the data
@@ -41,6 +40,7 @@ contract_size = 20
 # maxloss maxprofit
 max_loss=0 
 max_profit=0 
+max_loss
 # total p&l
 TOTAL_P_L=0
 
@@ -49,6 +49,9 @@ total_long_pnl=0
 total_short_pnl=0
 positive_pnl=0
 negative_pnl=0
+risk = 5000
+num_of_lots = 0
+max_num_lots=5
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():

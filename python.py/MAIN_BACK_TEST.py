@@ -1,14 +1,11 @@
 import pandas as pd
-import time
-
-
-file_path = r"D:\es hourly.csv"
+file_path = r"D:\ym daily.csv"
 
 # Load the data
 try:
     data = pd.read_csv(file_path)
 except Exception as e:
-    print("Error loading data:", e)
+    print("Error loading data: ", e)
     exit()
 
 # Print column names to verify
@@ -43,10 +40,10 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 50
+contract_size = 5
 
 # defining tick size
-tick_val = 0.25
+tick_val = 1
 
 # maxloss maxprofit
 max_loss = 0  
@@ -63,6 +60,7 @@ positive_pnl = 0
 negative_pnl = 0
 risk = 5000
 num_of_lots = 0
+max_num_lots=5
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
@@ -103,9 +101,12 @@ for index, row in data.iterrows():
                 if max_loss_for_trade > risk:
                     print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
                     continue  # Skip this trade
-                else: 
+             
+                else:
                     ( max_loss_for_trade <=risk)
                     num_of_lots = risk / max_loss_for_trade
+                    if num_of_lots >=max_num_lots:
+                        num_of_lots = max_num_lots
                     number_of_positions += 1
                     entry_price = local_high + (tick_val * 2)
                     print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
@@ -113,6 +114,7 @@ for index, row in data.iterrows():
                     print("number_of_positions = ", number_of_positions)
                     print("   long_entry_price = ", entry_price)
                     print("        num_of_lots =",round(num_of_lots))
+                    print(" max_loss_for_trade =",round(max_loss_for_trade))
                     bull = True
                     flag = True
                     continue
@@ -162,9 +164,12 @@ for index, row in data.iterrows():
                 if max_loss_for_trade > risk:
                     print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
                     continue  # Skip this trade
-                else: 
+             
+                else:
                     ( max_loss_for_trade <=risk)
                     num_of_lots = risk / max_loss_for_trade
+                    if num_of_lots >=max_num_lots:
+                        num_of_lots = max_num_lots
                     number_of_positions += 1
                     entry_price = local_low - (tick_val * 2)
                     print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
@@ -172,6 +177,7 @@ for index, row in data.iterrows():
                     print("number_of_positions =", number_of_positions)
                     print("  short_entry_price = ", entry_price)
                     print("        num_of_lots =",round(num_of_lots))
+                    print(" max_loss_for_trade =",round(max_loss_for_trade))
 
                     bear = True
                     flag = True
