@@ -112,7 +112,6 @@ for index, row in data.iterrows():
                     print("\033[32m------ LONG ENTRY ------ (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
                     print("       ENTRY PRICE  = ", entry_price)
                     print("number_of_positions = ", number_of_positions)
-                    print("   long_entry_price = ", entry_price)
                     print("        num_of_lots =",round(num_of_lots))
                     print(" max_loss_for_trade =",round(max_loss_for_trade))
                     bull = True
