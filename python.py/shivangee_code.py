@@ -49,9 +49,6 @@ total_long_pnl=0
 total_short_pnl=0
 positive_pnl=0
 negative_pnl=0
-risk = 5000
-num_of_lots = 0
-max_num_lots=5
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
