@@ -105,9 +105,9 @@ for index, row in data.iterrows():
                 else:
                     (max_loss_for_trade <=risk)
                     num_of_lots = math.floor(risk / max_loss_for_trade)
+                    number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
-                       number_of_positions += 1
                     entry_price = local_high + (tick_val * 2)
                     print("\033[32m------ LONG ENTRY ------ (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
                     print("       ENTRY PRICE  = ", entry_price)
@@ -167,9 +167,9 @@ for index, row in data.iterrows():
                 else:
                     ( max_loss_for_trade <=risk)
                     num_of_lots = math.floor(risk / max_loss_for_trade)
+                    number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
-                       number_of_positions += 1
                     entry_price = local_low - (tick_val * 2)
                     print("\033[31m------ SHORT ENTRY ------ (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
                     print("        ENTRY PRICE = ", entry_price)
