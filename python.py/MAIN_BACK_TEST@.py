@@ -1,8 +1,7 @@
 import pandas as pd
 import math
 
-
-file_path = r"D:\ym daily.csv"
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
@@ -43,10 +42,10 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 5
+contract_size = 50
 
 # defining tick size
-tick_val = 1
+tick_val = 0.25
 
 # maxloss maxprofit
 max_loss = 0  
@@ -96,7 +95,6 @@ for index, row in data.iterrows():
                   , " temp_high :", temp_high)
             print("Current Low :", current_low, "Previous Low :", previous_low, "local_low :", local_low
                   , " temp_low :", temp_low)
-
             
             # bullish candle---------------------------------------------------------------------------
             max_loss_for_trade = (local_high - local_low + (tick_val * 4)) * contract_size 
@@ -104,11 +102,11 @@ for index, row in data.iterrows():
                 if max_loss_for_trade > risk:
                    print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
                    continue  # Skip this trade
-             
                 else:
                     (max_loss_for_trade <=risk)
                     num_of_lots = math.floor(risk / max_loss_for_trade)
                     if num_of_lots >=max_num_lots:
+                       num_of_lots = max_num_lots
                        number_of_positions += 1
                     entry_price = local_high + (tick_val * 2)
                     print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
@@ -166,11 +164,11 @@ for index, row in data.iterrows():
                 if max_loss_for_trade > risk:
                     print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
                     continue  # Skip this trade
-             
                 else:
                     ( max_loss_for_trade <=risk)
                     num_of_lots = math.floor(risk / max_loss_for_trade)
                     if num_of_lots >=max_num_lots:
+                       num_of_lots = max_num_lots
                        number_of_positions += 1
                     entry_price = local_low - (tick_val * 2)
                     print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
@@ -221,7 +219,6 @@ for index, row in data.iterrows():
                 print("          max_loss = ",round( max_loss,2))
                 print("       num_of_lots =", round(num_of_lots))
                 continue
-
         except Exception as e:
             print("Error:", e)
 
