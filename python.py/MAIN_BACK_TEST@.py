@@ -2,7 +2,7 @@ import pandas as pd
 import math
 
 
-file_path = r"D:\es daily.csv"
+file_path = r"D:\ym daily.csv"
 
 # Load the data
 try:
@@ -43,10 +43,10 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 50
+contract_size = 5
 
 # defining tick size
-tick_val = 0.25
+tick_val = 1
 
 # maxloss maxprofit
 max_loss = 0  
@@ -99,7 +99,7 @@ for index, row in data.iterrows():
 
             
             # bullish candle---------------------------------------------------------------------------
-            max_loss_for_trade = (local_high - local_low + (4 * tick_val)) * contract_size 
+            max_loss_for_trade = (local_high - local_low + (tick_val * 4)) * contract_size 
             if current_high > local_high and local_high != 0 and local_low != 0 and not bear and not flag:
                 if max_loss_for_trade > risk:
                    print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
@@ -161,7 +161,7 @@ for index, row in data.iterrows():
                 continue
 
             # bearish candle-------------------------------------------------------------------------
-            max_loss_for_trade = (local_high - local_low + (4 * tick_val)) * contract_size
+            max_loss_for_trade = (local_high - local_low + ( tick_val * 4)) * contract_size
             if current_low < local_low and local_high != 0 and local_low != 0 and not bull and not flag:
                 if max_loss_for_trade > risk:
                     print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
