@@ -109,8 +109,8 @@ for index, row in data.iterrows():
                        num_of_lots = max_num_lots
                        number_of_positions += 1
                     entry_price = local_high + (tick_val * 2)
-                    print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
-                    print("current_high = ", current_high), print("local_high = ", local_high)
+                    print("\033[32m------ LONG ENTRY ------ (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
+                    print("       ENTRY PRICE  = ", entry_price)
                     print("number_of_positions = ", number_of_positions)
                     print("   long_entry_price = ", entry_price)
                     print("        num_of_lots =",round(num_of_lots))
@@ -123,10 +123,10 @@ for index, row in data.iterrows():
                 number_of_positions -= 1
                 num_of_trades += 1
                 exit_price = local_low - (tick_val * 2)
-                print("\033[32m--SNP500 LONG EXIT-- (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
-                print("current_low =", current_low), print("local_low =", local_low)
-                print("number_of_positions = ", number_of_positions), print("num_of_trades = ", num_of_trades)
-                print("    long_exit_price =", exit_price)
+                print("\033[32m------ LONG EXIT ------ (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
+                print("         EXIT PRICE =", exit_price)
+                print("number_of_positions = ", number_of_positions)
+                print("      num_of_trades = ", num_of_trades)
                 bull = False
                 flag = False
 
@@ -171,10 +171,9 @@ for index, row in data.iterrows():
                        num_of_lots = max_num_lots
                        number_of_positions += 1
                     entry_price = local_low - (tick_val * 2)
-                    print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
-                    print("current_low =", current_low), print("local_low =", local_low)
+                    print("\033[31m------ SHORT ENTRY ------ (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
+                    print("        ENTRY PRICE = ", entry_price)
                     print("number_of_positions =", number_of_positions)
-                    print("  short_entry_price = ", entry_price)
                     print("        num_of_lots =",round(num_of_lots))
                     print(" max_loss_for_trade =",round(max_loss_for_trade))
                     bear = True
@@ -185,10 +184,10 @@ for index, row in data.iterrows():
                 number_of_positions -= 1
                 num_of_trades += 1
                 exit_price = local_high + (tick_val * 2)
-                print("\033[31m--SNP500 SHORT EXIT-- (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
-                print("current_high =", current_high), print("local_high =", local_high),
-                print("number_of_positions = ", number_of_positions), print("num_of_trades = ", num_of_trades)
-                print("   short_exit_price = ", exit_price)
+                print("\033[31m------ SHORT EXIT ------ (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
+                print("         EXIT PRICE = ", exit_price)
+                print("number_of_positions = ", number_of_positions)
+                print("      num_of_trades = ", num_of_trades)
                 bear = False
                 flag = False
 
