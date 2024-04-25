@@ -1,8 +1,8 @@
 import pandas as pd
-import time
+import math
 
 
-file_path = r"D:\ym daily.csv"
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
@@ -43,10 +43,10 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 5
+contract_size = 50
 
 # defining tick size
-tick_val = 1
+tick_val = 0.25
 
 # maxloss maxprofit
 max_loss = 0  
@@ -99,7 +99,7 @@ for index, row in data.iterrows():
 
             
             # bullish candle---------------------------------------------------------------------------
-            max_loss_for_trade = (local_high - local_low) * contract_size
+            max_loss_for_trade = (local_high - local_low + (4 * tick_val)) * contract_size 
             if current_high > local_high and local_high != 0 and local_low != 0 and not bear and not flag:
                 if max_loss_for_trade > risk:
                    print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
@@ -107,10 +107,9 @@ for index, row in data.iterrows():
              
                 else:
                     (max_loss_for_trade <=risk)
-                    num_of_lots = round(risk / max_loss_for_trade)
+                    num_of_lots = math.floor(risk / max_loss_for_trade)
                     if num_of_lots >=max_num_lots:
-                       num_of_lots = max_num_lots
-                    number_of_positions += 1
+                       number_of_positions += 1
                     entry_price = local_high + (tick_val * 2)
                     print("\033[32m--SNP500 LONG ENTRY-- (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
                     print("current_high = ", current_high), print("local_high = ", local_high)
@@ -162,7 +161,7 @@ for index, row in data.iterrows():
                 continue
 
             # bearish candle-------------------------------------------------------------------------
-            max_loss_for_trade = (local_high - local_low) * contract_size
+            max_loss_for_trade = (local_high - local_low + (4 * tick_val)) * contract_size
             if current_low < local_low and local_high != 0 and local_low != 0 and not bull and not flag:
                 if max_loss_for_trade > risk:
                     print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
@@ -170,10 +169,9 @@ for index, row in data.iterrows():
              
                 else:
                     ( max_loss_for_trade <=risk)
-                    num_of_lots = round(risk / max_loss_for_trade)
+                    num_of_lots = math.floor(risk / max_loss_for_trade)
                     if num_of_lots >=max_num_lots:
-                       num_of_lots = max_num_lots
-                    number_of_positions += 1
+                       number_of_positions += 1
                     entry_price = local_low - (tick_val * 2)
                     print("\033[31m--SNP500 SHORT ENTRY-- (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
                     print("current_low =", current_low), print("local_low =", local_low)
