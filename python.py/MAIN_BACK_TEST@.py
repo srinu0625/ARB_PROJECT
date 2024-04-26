@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-file_path = r"D:\es daily.csv"
+file_path = r"D:\SNP_30min_1nov-15marc.csv"
 
 # Load the data
 try:
@@ -59,9 +59,9 @@ total_long_pnl = 0
 total_short_pnl = 0
 positive_pnl = 0
 negative_pnl = 0
-risk = 5000
 num_of_lots = 0
 max_num_lots=5
+risk = 5000
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
@@ -99,11 +99,11 @@ for index, row in data.iterrows():
             max_loss_for_trade = (local_high - local_low + (tick_val * 4)) * contract_size 
             if current_high > local_high and local_high != 0 and local_low != 0 and not bear and not flag:
                 if max_loss_for_trade > risk:
-                   print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
+                   max_num_lots = 1
                    continue  # Skip this trade
                 else:
                     max_loss_for_trade <= risk
-                    num_of_lots = math.floor(risk / max_loss_for_trade)
+                    num_of_lots = round(risk / max_loss_for_trade)
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
@@ -160,11 +160,11 @@ for index, row in data.iterrows():
             max_loss_for_trade = (local_high - local_low + ( tick_val * 4)) * contract_size
             if current_low < local_low and local_high != 0 and local_low != 0 and not bull and not flag:
                 if max_loss_for_trade > risk:
-                    print("\033[93m Max loss exceeds RISK. Skipping trade.\033[0m")
+                    num_of_lots = 1
                     continue  # Skip this trade
                 else:
                     ( max_loss_for_trade <=risk)
-                    num_of_lots = math.floor(risk / max_loss_for_trade)
+                    num_of_lots = round(risk / max_loss_for_trade)
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
