@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-file_path = r"D:\es daily.csv"
+file_path = r"D:\nq daily.csv"
 
 # Load the data
 try:
@@ -42,7 +42,7 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price  = 0
-contract_size = 50
+contract_size = 20
 # defining tick size
 tick_val = 0.25
 
@@ -76,17 +76,24 @@ for index, row in data.iterrows():
             previous_low = float(data.at[index - 1, low_column_name])
 
             # case 1-----------------------------------------------------------------------------------
-            if current_high > previous_high:
+            if (current_high > previous_high):
                 temp_high = current_high
 
-            if current_low < previous_low:
+            if (current_low < previous_low):
                 temp_low = current_low
             # case 2-----------------------------------------------------------------------------------
-            if current_high > previous_high:
+            if (current_high > previous_high):
                 local_low = temp_low
 
-            if current_low < previous_low:
+            if (current_low < previous_low):
                 local_high = temp_high
+
+            # case 3------------------------------------------------------------------------------------
+            if(bull and local_low>exit_price):
+               exit_price = local_low
+           
+            if(bear and local_high<exit_price):
+               exit_price = local_high
 
             # Printing data
             print("Time:", current_time)
@@ -103,7 +110,7 @@ for index, row in data.iterrows():
                    continue  # Skip this trade
                 else:
                     max_loss_for_trade <= risk
-                    num_of_lots = math.floor(risk / max_loss_for_trade)
+                    num_of_lots = math.floor(risk / max_loss_for_trade )
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
@@ -116,11 +123,9 @@ for index, row in data.iterrows():
                     bull = True
                     flag = True
                     continue
-
-            if current_low < local_low and bull and flag:
-                print(current_low, local_low)
-                if (local_low > exit_price and bull):
-                   exit_price = local_low - (tick_val * 2)
+            # Bullish Exit
+            if current_low < exit_price and bull and flag:
+                exit_price = exit_price - (tick_val * 2)
                 number_of_positions -= 1
                 num_of_trades += 1
                 print("\033[32m<------ LONG EXIT ------> (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
@@ -162,11 +167,11 @@ for index, row in data.iterrows():
             max_loss_for_trade = (local_high - local_low + ( tick_val * 4)) * contract_size
             if current_low < local_low and local_high != 0 and local_low != 0 and not bull and not flag:
                 if max_loss_for_trade > risk:
-                    num_of_lots = 1
-                    continue  # Skip this trade
+                   num_of_lots = 1
+                   continue  # Skip this trade
                 else:
                     ( max_loss_for_trade <=risk)
-                    num_of_lots = math.floor(risk / max_loss_for_trade)
+                    num_of_lots = math.floor( risk / max_loss_for_trade)
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
@@ -179,12 +184,9 @@ for index, row in data.iterrows():
                     bear = True
                     flag = True
                     continue
-                    
-
-            if current_high > local_high and bear and flag:
-                print(current_high, current_low)
-                if (current_high > exit_price and bear):
-                    exit_price = local_high + (tick_val * 2)
+            # bearish exit        
+            if current_high > exit_price and bear and flag:
+                exit_price = exit_price + (tick_val * 2)
                 number_of_positions -= 1
                 num_of_trades += 1
                 print("\033[31m<------ SHORT EXIT ------> (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
