@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-file_path = r"D:\nq daily.csv"
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
@@ -42,7 +42,7 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price  = 0
-contract_size = 20
+contract_size = 50
 # defining tick size
 tick_val = 0.25
 
@@ -103,7 +103,7 @@ for index, row in data.iterrows():
                    continue  # Skip this trade
                 else:
                     max_loss_for_trade <= risk
-                    num_of_lots = round(risk / max_loss_for_trade)
+                    num_of_lots = math.floor(risk / max_loss_for_trade)
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
@@ -118,18 +118,18 @@ for index, row in data.iterrows():
                     continue
 
             if current_low < local_low and bull and flag:
-                if local_low > exit_price:
+                print(current_low, local_low)
+                if (local_low > exit_price and bull):
                    exit_price = local_low - (tick_val * 2)
                 number_of_positions -= 1
                 num_of_trades += 1
                 print("\033[32m<------ LONG EXIT ------> (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
                 print("         EXIT PRICE = ", exit_price)
                 print("   num_of_positions = ", number_of_positions)
+                print("        num_of_lots = ", round(-1 * num_of_lots))
                 print("      num_of_trades = ", num_of_trades)
                 bull = False
                 flag = False
-
-                
 
                 # Calculate P&L
                 pnl = (exit_price - entry_price) * num_of_lots * contract_size
@@ -153,10 +153,9 @@ for index, row in data.iterrows():
                 else:
                     negative_pnl += pnl
 
-                print("      P&L_Of_trade = ", pnl_color, round(integer_pnl,2),"\033[0m")
                 print("        max_profit = ", round(max_profit,2))
                 print("          max_loss = ", round(max_loss,2))
-                print("       num_of_lots = ", round(num_of_lots))
+                print("      P&L_Of_trade = ", pnl_color, round(integer_pnl,2),"\033[0m")
                 continue
 
             # bearish candle-------------------------------------------------------------------------
@@ -167,7 +166,7 @@ for index, row in data.iterrows():
                     continue  # Skip this trade
                 else:
                     ( max_loss_for_trade <=risk)
-                    num_of_lots = round(risk / max_loss_for_trade)
+                    num_of_lots = math.floor(risk / max_loss_for_trade)
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
                        num_of_lots = max_num_lots
@@ -180,15 +179,18 @@ for index, row in data.iterrows():
                     bear = True
                     flag = True
                     continue
+                    
 
             if current_high > local_high and bear and flag:
-                if local_high < exit_price :
-                   exit_price = local_high + (tick_val * 2)
+                print(current_high, current_low)
+                if (current_high > exit_price and bear):
+                    exit_price = local_high + (tick_val * 2)
                 number_of_positions -= 1
                 num_of_trades += 1
                 print("\033[31m<------ SHORT EXIT ------> (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
                 print("         EXIT PRICE = ", exit_price)
                 print("   num_of_positions = ", number_of_positions)
+                print("        num_of_lots = ", round(-1 * num_of_lots))
                 print("      num_of_trades = ", num_of_trades)
                 bear = False
                 flag = False
@@ -215,16 +217,16 @@ for index, row in data.iterrows():
                 else:
                     negative_pnl += pnl
 
+                print("        max_profit = ", round(max_profit,2))  
+                print("          max_loss = ", round( max_loss,2))
                 print("      P&L_of_trade = ", pnl_color, round(integer_pnl,2),"\033[0m")
-                print("        max_profit = ", round(max_profit,2))
-                print("          max_loss = ",round( max_loss,2))
-                print("       num_of_lots = ", round(num_of_lots))
                 continue
+
         except Exception as e:
             print("Error:", e)
 
         finally:
-            print("-----------------------------End of iteration---------------------------------")
+            print("-----------------------------------End of iteration-------------------------------------")
 
 max_loss_color = "\033[31m" if max_loss < 0 else "\033[32m"
 max_profit_color = "\033[31m" if max_profit < 0 else "\033[32m"
