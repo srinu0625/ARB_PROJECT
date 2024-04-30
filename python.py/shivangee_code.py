@@ -1,5 +1,7 @@
 import pandas as pd
-file_path = r"D:\nq daily.csv"
+import math 
+
+file_path = r"D:\es daily.csv"
 
 # Load the data
 try:
@@ -36,11 +38,13 @@ num_of_trades=0
 # P&L calculation
 entry_price = 0
 exit_price = 0
-contract_size = 20 
+contract_size = 20
+tick_val = 0.25
+risk = 5000
+max_num_lots = 5
 # maxloss maxprofit
 max_loss=0 
 max_profit=0 
-max_loss
 # total p&l
 TOTAL_P_L=0
 
@@ -69,6 +73,15 @@ for index, row in data.iterrows():
             if current_low < previous_low:
                 temp_low = current_low
 
+             # case 3-----------------------------------------------------------------------------------
+            if(bull and previous_low > exit_price):
+               exit_price = previous_low
+           
+            if(bear and previous_high < exit_price):
+               exit_price = previous_high
+
+            
+
             # Printing data
             print("Time:", current_time)
             print("Current High :", current_high, "Previous High :", previous_high)
@@ -76,74 +89,97 @@ for index, row in data.iterrows():
         
 
             # bullish candle---------------------------------------------------------------------------
-            if current_high > previous_high and not bear and not flag:
-                number_of_positions +=1
-                entry_price = previous_high
-                print("\033[32m--SNP500 LONG ENTRY-- (CH > PH)\033[0m",file_path) # ANSI escape codes for this color coding to work
-                print("current_high : ",current_high),print("previous_high : ",previous_high)
-                print("number_of_positions =",number_of_positions)
-                print("   long_entry_price =",entry_price)
+            max_loss_for_trade = (previous_high - previous_low + (tick_val * 4)) * contract_size
+            if current_high > previous_high and previous_high != 0 and previous_low != 0 and not bear and not flag:
+                if max_loss_for_trade > risk:
+                   num_of_lots = 1
+                   continue 
+                else:
+                    max_loss_for_trade <= risk
+                    num_of_lots = math.floor(risk / max_loss_for_trade )
+                    number_of_positions += 1
+                    if num_of_lots >=max_num_lots:
+                       num_of_lots = 1
+                entry_price = previous_high + (tick_val * 2)
+                print("\033[32m<------ LONG ENTRY ------> (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
+                print("       ENTRY PRICE  = ", entry_price)
+                print("   num_of_positions = ", number_of_positions)
+                print("        num_of_lots = ",round(num_of_lots))
+                print(" max_loss_for_trade = ",round(max_loss_for_trade))
                 bull = True
                 flag = True
                 continue
-
-            if current_low < previous_low and bull and flag:
+            # bullish exit---
+            if current_low < exit_price and bull and flag:
+                exit_price = exit_price - (tick_val * 2)
                 number_of_positions -=1
                 num_of_trades+=1
-                exit_price = previous_low
-                print("\033[32m--SNP500 LONG EXIT-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
-                print("current_low :",current_low),print("previous_low :",previous_low)
-                print("number_of_positions =",number_of_positions),print("num_of_trades = ",num_of_trades)
-                print("    long_exit_price =",exit_price)
+                print("\033[32m<------ LONG EXIT ------> (CL < LL)\033[0m")  # ANSI escape codes for this color coding to work
+                print("         EXIT PRICE = ", exit_price)
+                print("   num_of_positions = ", number_of_positions)
+                print("        num_of_lots = ", round(-1 * num_of_lots))
+                print("      num_of_trades = ", num_of_trades)
                 bull = False
                 flag = False
 
-            # Calculate P&L
-                pnl = (exit_price - entry_price) * 1 *contract_size
+                # Calculate P&L
+                pnl = (exit_price - entry_price) * num_of_lots * contract_size
                 TOTAL_P_L+=pnl
                 total_long_pnl+=pnl
-                integer_pnl = int(pnl)  # Extract the integer part of the P&L
+                integer_pnl = float(pnl)  # Extract the integer part of the P&L
 
-            # declaring maxloss and maxprofit
+                # declaring maxloss and maxprofit
                 max_profit=max(max_profit,pnl)
                 max_loss=min(max_loss,pnl)
 
-            # Check if integer part of P&L is positive or negative and set color accordingly
+                # Check if integer part of P&L is positive or negative and set color accordingly
                 if integer_pnl >= 0:
                     pnl_color = "\033[32m"  # Green color
                 else:
                     pnl_color = "\033[31m"  # Red color
-            # Add to total positive or negative P&L based on the result
+                # Add to total positive or negative P&L based on the result
                 if pnl >= 0:
                     positive_pnl += pnl
                 else:
                     negative_pnl += pnl
 
-                print("P&L for this trade = ",pnl_color, integer_pnl,"\033[0m")
-                print("        max_profit = ",max_profit)
-                print("          max_loss = ",max_loss)
-                continue
+                print("        max_profit = ", round(max_profit,2))
+                print("          max_loss = ", round(max_loss,2))
+                print("      P&L_Of_trade = ", pnl_color, round(integer_pnl,2),"\033[0m")
+                
+                # updating the prevoius low
+                previous_low = current_low
 
             # bearish candle-------------------------------------------------------------------------
-            if current_low < previous_low and not bull and not flag:
-                number_of_positions +=1
-                entry_price = previous_low
-                print("\033[31m--SNP500 SHORT ENTRY-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
-                print("current_low :",current_low),print("previous_low :",previous_low)
-                print("number_of_positions = ",number_of_positions)
-                print("  short_entry_price = ",entry_price)
-                bear = True
-                flag = True
-                continue
-
-            if current_high > previous_high and bear and flag:
-                number_of_positions -=1
-                num_of_trades +=1  
-                exit_price = previous_high      
-                print("\033[31m--SNP500 SHORT EXIT-- (CH > PH)\033[0m",file_path) #  ANSI escape codes for this color coding to work 
-                print("current_high :",current_high), print("previous_high :",previous_high),
-                print("number_of_positions = ",number_of_positions),print("num_of_trades = ",num_of_trades)
-                print("   short_exit_price = ",exit_price)
+            max_loss_for_trade = (previous_high - previous_low + ( tick_val * 4)) * contract_size
+            if current_low < previous_low and previous_high != 0 and previous_low != 0 and not bull and not flag:
+                if max_loss_for_trade > risk:
+                   num_of_lots = 1
+                   continue  # Skip this trade
+                else:
+                    ( max_loss_for_trade <=risk)
+                    num_of_lots = math.floor( risk / max_loss_for_trade)
+                    number_of_positions += 1
+                    if num_of_lots >=max_num_lots:
+                       num_of_lots = max_num_lots
+                    entry_price = previous_low - (tick_val * 2)
+                    print("\033[31m--SNP500 SHORT ENTRY-- (CL < PL)\033[0m",file_path) # ANSI escape codes for this color coding to work
+                    print("current_low :",current_low),print("previous_low :",previous_low)
+                    print("number_of_positions = ",number_of_positions)
+                    print("  short_entry_price = ",entry_price)
+                    bear = True
+                    flag = True
+                    continue
+            # bearish exit------
+            if current_high > exit_price and bear and flag:
+                exit_price = exit_price + (tick_val * 2)
+                number_of_positions -= 1
+                num_of_trades += 1
+                print("\033[31m<------ SHORT EXIT ------> (CH > LH)\033[0m")  # ANSI escape codes for this color coding to work
+                print("         EXIT PRICE = ", exit_price)
+                print("   num_of_positions = ", number_of_positions)
+                print("        num_of_lots = ", round(-1 * num_of_lots))
+                print("      num_of_trades = ", num_of_trades)
                 bear = False
                 flag = False
 
@@ -151,11 +187,11 @@ for index, row in data.iterrows():
                 pnl = (entry_price - exit_price) * 1 *contract_size
                 TOTAL_P_L +=pnl
                 total_short_pnl+=pnl
-                integer_pnl = int(pnl)  # Extract the integer part of the P&L
+                integer_pnl = float(pnl)  # Extract the integer part of the P&L
 
             # declaring maxloss and maxprofit
-                max_profit=max(max_profit,pnl)
-                max_loss=min(max_loss,pnl)
+                max_profit = max(max_profit,pnl)
+                max_loss   = min(max_loss,pnl)
         
             # Check if integer part of P&L is positive or negative and set color accordingly
                 if integer_pnl >= 0:
@@ -174,7 +210,7 @@ for index, row in data.iterrows():
                 print("          max_loss =", max_loss)
 
                 # Update previous high
-                prev_high = current_high
+                prevoius_high = current_high
             
         except Exception as e:
             print("Error processing row:", e)

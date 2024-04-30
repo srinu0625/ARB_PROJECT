@@ -14,5 +14,6 @@
     "terminal.integrated.accessibleViewPreserveCursorPosition": true,
     "terminal.explorerKind": "integrated",
     "print.folder.maxLines": 2000,
-    "terminal.integrated.bellDuration": 10000
+    "terminal.integrated.bellDuration": 10000,
+    "cmake.configureOnOpen": false
 }
