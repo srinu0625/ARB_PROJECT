@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-file_path = r"D:\nq daily.csv"
+file_path = r"D:\ym 30min.csv"
 
 # Load the data
 try:
@@ -42,9 +42,9 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price  = 0
-contract_size = 20
+contract_size = 5
 # defining tick size
-tick_val = 0.25
+tick_val = 1
 
 # maxloss maxprofit
 max_loss   = 0  
@@ -59,9 +59,9 @@ total_long_pnl = 0
 total_short_pnl = 0
 positive_pnl = 0
 negative_pnl = 0
-num_of_lots = 0
-max_num_lots=5
-risk = 5000
+num_of_lots  = 0
+max_num_lots = 5
+risk = 2500
 
 # Iterate over each row of the DataFrame
 for index, row in data.iterrows():
@@ -88,7 +88,7 @@ for index, row in data.iterrows():
             if (current_low < previous_low):
                 local_high = temp_high
 
-            # case 3------------------------------------------------------------------------------------
+            # case 3-----------------------------------------------------------------------------------
             if(bull and local_low>exit_price):
                exit_price = local_low
            
@@ -106,7 +106,7 @@ for index, row in data.iterrows():
             max_loss_for_trade = (local_high - local_low + (tick_val * 4)) * contract_size 
             if current_high > local_high and local_high != 0 and local_low != 0 and not bear and not flag :
                 if max_loss_for_trade > risk:
-                   max_num_lots = 1
+                   num_of_lots = 1
                    continue  # Skip this trade
                 else:
                     max_loss_for_trade <= risk

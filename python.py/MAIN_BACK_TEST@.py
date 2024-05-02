@@ -59,7 +59,7 @@ total_long_pnl = 0
 total_short_pnl = 0
 positive_pnl = 0
 negative_pnl = 0
-num_of_lots = 0
+num_of_lots  = 0
 max_num_lots = 5
 risk = 5000
 
