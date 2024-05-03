@@ -1,7 +1,7 @@
 import pandas as pd
 import math
 
-file_path = r"D:\es hourly.csv"
+file_path = r"D:\ym daily.csv"
 
 # Load the data
 try:
@@ -42,9 +42,9 @@ num_of_trades = 0
 # P&L calculation
 entry_price = 0
 exit_price  = 0
-contract_size = 50
+contract_size = 5
 # defining tick size
-tick_val = 0.25
+tick_val = 1
 
 # maxloss maxprofit
 max_loss   = 0  

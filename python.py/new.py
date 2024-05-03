@@ -1,8 +1,8 @@
 import pandas as pd
 import math
 
-file_path1 = r"D:\es hourly.csv"
-file_path2 = r"D:\es daily.csv"
+file_path1 = r"D:\es hourly h.csv"
+file_path2 = r"D:\es daily d.csv"
 
 # Load the data
 try:
@@ -23,7 +23,7 @@ temp_low  = 0
 
 # local high and local low 
 current_high1=0
-current_low1=0
+current_low1 =0
 local_high1 = temp_high
 local_low1  = temp_low
 local_high2 = temp_high
@@ -80,7 +80,7 @@ for index1, row1 in data1.iterrows():
 
                 # If the hourly data date matches the daily data date
                 if current_date2 == current_date1:
-                    # try:
+                    #try:
                         # Extracting current and previous values for high and low from data1
                         current_time1 = row1[time_column_name]
                         current_high1 = float(row1[high_column_name])
@@ -161,7 +161,7 @@ for index1, row1 in data1.iterrows():
                     num_of_lots = math.floor(risk / max_loss_for_trade )
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
-                        num_of_lots = max_num_lots
+                        num_of_lots = 1
                     entry_price = local_high1 + (tick_val * 2)
                     print("\033[32m<------ LONG ENTRY ------> (CH1 > LH1 and LL1 > LH2)\033[0m")  # ANSI escape codes for this color coding to work
                     print("       ENTRY PRICE  = ", entry_price)
@@ -194,7 +194,7 @@ for index1, row1 in data1.iterrows():
 
                 # declaring maxloss and maxprofit
                 max_profit = max(max_profit, pnl)
-                max_loss=min(max_loss,pnl)
+                max_loss = min(max_loss,pnl)
 
                 # Check if integer part of P&L is positive or negative and set color accordingly
                 if integer_pnl >= 0:
@@ -226,7 +226,7 @@ for index1, row1 in data1.iterrows():
                     num_of_lots = math.floor( risk / max_loss_for_trade)
                     number_of_positions += 1
                     if num_of_lots >=max_num_lots:
-                        num_of_lots = max_num_lots
+                        num_of_lots = 1
                     entry_price = local_low1 - (tick_val * 2)
                     print("\033[31m<------ SHORT ENTRY ------> (CL1 < LL1 and LH1 < LH2)\033[0m")  # ANSI escape codes for this color coding to work
                     print("        ENTRY PRICE = ", entry_price)
@@ -278,11 +278,11 @@ for index1, row1 in data1.iterrows():
                 print("      P&L_of_trade = ", pnl_color, round(integer_pnl,2),"\033[0m")
                 print("------------------------------------------------")
                 continue
-            # except Exception as e:
-            #     print("Error:", e)
+            #  except Exception as e:
+            #      print("Error:", e)
 
-            # finally:
-            #     print("-----------------------------------End of iteration-------------------------------------")
+            #  finally:
+            #      print("-----------------------------------End of iteration-------------------------------------")
 
 max_loss_color = "\033[31m" if max_loss < 0 else "\033[32m"
 max_profit_color = "\033[31m" if max_profit < 0 else "\033[32m"
