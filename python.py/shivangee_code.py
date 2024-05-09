@@ -196,7 +196,7 @@ for index, row in data.iterrows():
             # Check if integer part of P&L is positive or negative and set color accordingly
                 if integer_pnl >= 0:
                     pnl_color = "\033[32m"  # Green color
-                else:
+                else: 
                     pnl_color = "\033[31m"  # Red color
 
             # Add to total positive or negative P&L based on the result
