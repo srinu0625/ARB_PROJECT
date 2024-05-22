@@ -77,6 +77,11 @@ for symbol in symbols:
                     current_position = (Sell_value - Buy_value)*0.5
                 elif symbol [0:3] == "MCL" :
                     current_position = (Sell_value - Buy_value)*100
+                elif symbol [0:3] == "MBT" :
+                    current_position = (Sell_value - Buy_value)*0.1
+                elif symbol [0:3] == "MGC" :
+                    current_position = (Sell_value - Buy_value)*10
+                
                  
                 data.at[index, 'P&L'] = current_position
                 Buy_Quantity = 0
