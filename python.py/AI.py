@@ -1,106 +1,99 @@
 import pandas as pd
-import datetime
 
-file_path = r"D:\surya sir.csv"
+# Load the dataset
+file_path = r"C:\Users\manoh\Desktop\SRINU\snp 10 min 2000 candles.csv"
+df = pd.read_csv(file_path)
 
-# Load the data
-try:
-    data = pd.read_csv(file_path)
-except Exception as e:
-    print("Error loading data:", e)
-    exit()
+# Print the column names to verify them
+print(df.columns)
 
-# Assuming the column names
-Date_Time_ = 'DateTime'
-Price_name = 'Price'
-Volume_name = 'Volume'
-ExchTime_name = 'ExchTime'
+# Initialize an empty DataFrame to store trades
+trades_df = pd.DataFrame(
+    columns=['Entry Date', 'Open', 'High', 'Low', 'Close', 'Stop Loss', 'Take Profit', 'P&L', 'Lots'])
 
-# Initialize variables
-current_minute = None
-avg_trade_price = 0
-total_volume = 0
-num_of_lines = 0
-Date_Time = 0
-curr_high = float('-inf')
-curr_low = float('inf')
-curr_close = 0
-timeSlot = 15  # Assuming time slot is 15 minutes
 
-# Iterate over each row of the DataFrame
-for index, row in data.iterrows():
-    try:
-        # Extracting values
-        Price = row[Price_name]
-        Volume = row[Volume_name]
-        ExchTime = row[ExchTime_name]
-        Date_Time = row[Date_Time_]
+# Define the conditions for bullish entries
+def is_bullish_entry(row):
+    open_price = row['Open']
+    high_price = row['High']
+    low_price = row['Low']
+    close_price = row['Last']
 
-        # Split ExchTime into hours, minutes, and seconds
-        hour, minute, second = map(int, ExchTime.split('.'))
+    if close_price > open_price:
+        open_low_ratio = (open_price - low_price) / (high_price - low_price)
+        close_open_ratio = (close_price - open_price) / (high_price - low_price)
+        high_close_ratio = (high_price - close_price) / (high_price - low_price)
 
-        # Initialize tm_struct as datetime object
-        tm_struct = datetime.datetime.now()
+        if (0.4 <= open_low_ratio <= 0.6 and 0.4 <= close_open_ratio <= 0.6 and high_close_ratio <= 0.12):
+            return True
+    return False
 
-        # Check if it's a new minute
-        if minute != current_minute:
-            # Print candlestick for the previous minute
-            if current_minute is not None:
-                print("Time:", tm_struct)
-                print("Open:", curr_open)
-                print("High:", curr_high)
-                print("Low:", curr_low)
-                print("Close:", curr_close)
-                print('----------------------------')
 
-            # Reset variables for the new minute
-            current_minute = minute
-            curr_open = Price
-            curr_high = Price
-            curr_low = Price
-            curr_close = Price
-            total_volume = 0
+# Initialize variables for trade tracking
+total_pl = 0
 
-        # Update high and low prices
-        if Price > curr_high:
-            curr_high = Price
-        if Price < curr_low:
-            curr_low = Price
+# Iterate through the dataframe to execute trades
+for index, row in df.iterrows():
+    if is_bullish_entry(row):
+        # Take long entry at current close
+        entry_price = row['Last']
+        stop_loss = row['Low']
+        take_profit = entry_price + (row['High'] - row['Low'])
 
-        # Check if it's the end of a candlestick interval
-        if tm_struct.minute % timeSlot == 0 and tm_struct.minute != minute:
-            curr_close = Price
-            tm_struct = datetime.datetime.now()
+        # Calculate P&L based on the assumption of taking one lot
+        pnl = (row['Last'] - entry_price) * 1 * 50 if index > 0 else 0
 
-        # Calculate average trade price for the previous minute
-        if current_minute is not None:
-            if total_volume != 0:
-                avg_trade_price = total_trade_value / total_volume
-                avg_trade_price_rounded = round(avg_trade_price, 2)
-                print(f"Avg_trade_price : {current_minute}: {avg_trade_price_rounded}")
-                print('----------------------------')
-            else:
-                print(f"No trades occurred in minute {current_minute}")
+        # Update total P&L
+        total_pl += pnl
 
-            if avg_trade_price > curr_high:
-                curr_high = avg_trade_price
-                print("curr_high :", curr_high)
-            if avg_trade_price < curr_low:
-                curr_low = avg_trade_price
-                print("curr_Low :", curr_low)
+        # Add trade details to the DataFrame
+        trades_df = trades_df._append({
+            'Entry Date': row['Date (GMT)'],
+            'Open': row['Open'],
+            'High': row['High'],
+            'Low': row['Low'],
+            'Close': row['Last'],
+            'Stop Loss': stop_loss,
+            'Take Profit': take_profit,
+            'P&L': pnl,
+            'Lots': 1
+        }, ignore_index=True)
 
-            if tm_struct.minute % timeSlot == 0:
-                curr_close = avg_trade_price
-                print("curr_close :", curr_close)
+        # Print trade details
+        print("Bullish entry at", row['Date (GMT)'])
+        print(" Open:", row['Open'], " High:", row['High'])
+        print(" Low:", row['Low'], " Close:", row['Last'])
+        print(" Stop Loss:", stop_loss)
+        print(" Take Profit:", take_profit)
+        print(" P&L:", pnl)
+        print('-------------------------------------------------')
 
-            # Reset variables for the new minute
-            tm_struct = datetime.datetime.now()
-            total_trade_value = 0
-            total_volume = 0
+        # Check for take profit or stop loss conditions and execute them if met
+        for i in range(index + 1, len(df)):
+            current_price = df.at[i, 'Last']
+            if current_price >= take_profit:
+                pnl = (current_price - entry_price) * 1 * 50
+                total_pl += pnl
+                trades_df.loc[index, 'Take Profit'] = current_price
+                trades_df.loc[index, 'P&L'] = pnl
+                print("Take profit hit at", df.at[i, 'Date (GMT)'])
+                print("Close price:", current_price)
+                print("P&L:", pnl)
+                print('-------------------------------------------------')
+                break
+            elif current_price <= stop_loss:
+                pnl = (stop_loss - entry_price) * 1 * 50
+                total_pl += pnl
+                trades_df.loc[index, 'Stop Loss'] = stop_loss
+                trades_df.loc[index, 'P&L'] = pnl
+                print("Stop loss hit at", df.at[i, 'Date (GMT)'])
+                print("Close price:", current_price)
+                print("P&L:", pnl)
+                print('-------------------------------------------------')
+                break
 
-        # Accumulate trade value and volume
-        total_trade_value += Price * Volume
-        total_volume += Volume
+# Save trades to a file
+trades_df.to_csv(r'C:\Users\manoh\Desktop\SRINU\bullish_trades.csv', index=False)
 
-    except Exception as e:
-        print("Error:", e)
+# Print total P&L
+print("Total P&L:", total_pl)
