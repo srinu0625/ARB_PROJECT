@@ -28,7 +28,6 @@ local_low2 = 0
 bull = False
 bear = False
 flag = False
-number_of_positions = 0
 num_of_trades = 0
 entry_price = 0
 exit_price = 0
@@ -113,7 +112,6 @@ for index1, row1 in data1.iterrows():
                         entry_price = local_high1 + (tick_val * 2)
                         print("\033[32m<------ LONG ENTRY ------>\033[0m")
                         print("ENTRY PRICE  = ", entry_price)
-                        print("num_of_positions = ", number_of_positions)
                         print("num_of_lots = ", round(num_of_lots))
                         print("max_loss_for_trade = ", round(max_loss_for_trade))
                         print("---------------------------------------------")
@@ -123,12 +121,10 @@ for index1, row1 in data1.iterrows():
 
                     # Bullish exit (local_low1 of current candle)
                     if bull:
-                        exit_price = local_low1
-                        number_of_positions -= 1
+                        exit_price = local_low1 - (tick_val * 2)
                         num_of_trades += 1
                         print("\033[32m<------ LONG EXIT ------>\033[0m")
                         print("EXIT PRICE = ", exit_price)
-                        print("num_of_positions = ", number_of_positions)
                         print("num_of_lots = ", round(-1 * num_of_lots))
                         print("num_of_trades = ", num_of_trades)
                         bull = False
@@ -175,7 +171,6 @@ for index1, row1 in data1.iterrows():
                         entry_price = local_low1 - (tick_val * 2)
                         print("\033[31m<------ SHORT ENTRY ------>\033[0m")
                         print("ENTRY PRICE = ", entry_price)
-                        print("num_of_positions = ", number_of_positions)
                         print("num_of_lots = ", round(num_of_lots))
                         print("max_loss_for_trade = ", round(max_loss_for_trade))
                         print("------------------------------------------------")
@@ -185,12 +180,10 @@ for index1, row1 in data1.iterrows():
 
                     # Bearish Exit (local_high1 of current candle)
                     if bear:
-                        exit_price = local_high1
-                        number_of_positions -= 1
+                        exit_price = local_high1 + (tick_val * 2)
                         num_of_trades += 1
                         print("\033[31m<------ SHORT EXIT ------>\033[0m")
                         print("EXIT PRICE = ", exit_price)
-                        print("num_of_positions = ", number_of_positions)
                         print("num_of_lots = ", round(-1 * num_of_lots))
                         print("num_of_trades = ", num_of_trades)
                         bear = False
