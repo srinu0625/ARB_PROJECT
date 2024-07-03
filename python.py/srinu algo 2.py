@@ -216,7 +216,7 @@ for index1, row1 in data1.iterrows():
                                         number_of_positions += 1
                                         if num_of_lots >=max_num_lots:
                                             num_of_lots = max_num_lots
-                                        entry_price = local_high1 + (tick_val * 2)
+                                        entry_price = current_high1 + (tick_val * 2)
                                         print("\033[32m<------ LONG ENTRY ------> (CH1 > LH1 and LL1 > LH2)\033[0m")  # ANSI escape codes for this color coding to work
                                         print("       ENTRY PRICE  = ", entry_price)
                                         print("   num_of_positions = ", number_of_positions)
@@ -230,7 +230,7 @@ for index1, row1 in data1.iterrows():
                                 if current_low1 <= local_low1 and bull and flag:
                                     print("1 = hourly","2 = daily")
                                     print("CL1 =",current_low1,"LL1 =",local_low1)
-                                    exit_price = current_low1 - (tick_val * 2)
+                                    exit_price = local_low1 - (tick_val * 2)
                                     number_of_positions -= 1
                                     num_of_trades += 1
                                     print("\033[32m<------ LONG EXIT ------> (CL1 < LL1)\033[0m")  # ANSI escape codes for this color coding to work
@@ -283,7 +283,7 @@ for index1, row1 in data1.iterrows():
                                         number_of_positions += 1
                                         if num_of_lots >=max_num_lots:
                                             num_of_lots = max_num_lots
-                                        entry_price = local_low1 - (tick_val * 2)
+                                        entry_price = current_low1 - (tick_val * 2)
                                         print("\033[31m<------ SHORT ENTRY ------> (CL1 < LL1 and LH1 < LH2)\033[0m")  # ANSI escape codes for this color coding to work
                                         print("        ENTRY PRICE = ", entry_price)
                                         print("   num_of_positions = ", number_of_positions)
@@ -297,7 +297,7 @@ for index1, row1 in data1.iterrows():
                                 if current_high1 >= local_high1 and bear and flag:
                                     print("1 = hourly","2 = daily")
                                     print("CH1 =",local_high1,"LH1 =",local_high1)
-                                    exit_price = current_high1 + (tick_val * 2)
+                                    exit_price = local_high1 + (tick_val * 2)
                                     number_of_positions -= 1
                                     num_of_trades += 1
                                     print("\033[31m<------ SHORT EXIT ------> (CH1 > LH1)\033[0m")  # ANSI escape codes for this color coding to work
